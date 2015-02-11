@@ -1,0 +1,17 @@
+{
+	"name": "silverstripe-australia/ssautesting",
+	"description": "Some extensions to the default SS test structures to allow parametrisation in CI builds, as well as a framework for selenium testing.",
+	"type": "silverstripe-module",
+	"keywords": ["silverstripe", "testing", "selenium", "continuous integration"],
+	"license": "BSD-3-Clause",
+	"authors": [
+	{
+		"name": "Marcus Nyeholt",
+		"email": "marcus@silverstripe.com.au"
+	}
+	],
+	"require":
+	{
+		"silverstripe-australia/ba-sis": "~1.1"
+	}
+}
