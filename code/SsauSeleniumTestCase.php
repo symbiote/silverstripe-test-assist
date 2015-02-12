@@ -67,7 +67,7 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 		$this->type("id=MemberLoginForm_LoginForm_Email", $user);
 		$this->type("id=MemberLoginForm_LoginForm_Password", $pass);
 		$this->click("id=MemberLoginForm_LoginForm_action_dologin");
-		$this->waitForPageToLoad("5000");
+		$this->waitForPageToLoad("15000");
 		$this->open($url);
 	}
 	
