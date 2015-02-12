@@ -266,4 +266,8 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 		$idValue = $this->getEval(" '" . $editUrl . "'.substring('" . $editUrl . "'.indexOf('item/')+5, '" . $editUrl . "'.length); ");
 		return $idValue;
 	}
+	
+	protected function getAttributeValue($selector, $attribute) {
+		return $this->getEval('window.jQuery("' . $selector . '").attr("' . $attribute . '");');
+	}
 }
