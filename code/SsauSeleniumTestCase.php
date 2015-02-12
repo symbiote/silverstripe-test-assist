@@ -52,19 +52,28 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	}
 	
 	public function loginToCms($user = null, $pass = null) {
+		$this->loginTo('admin/pages');
+		$this->waitForElementPresent('.cms-content-header-info');
+		// element present 'cms-content-header-info'
+	}
+	
+	public function loginTo($url, $user = null, $pass = null) {
+		$encoded = urlencode($url);
+		
 		$user = $user ? $user : $this->user;
 		$pass = $pass ? $pass : $this->pass;
 		
-		$this->open("Security/login?BackURL=admin%2Fpages");
+		$this->open("Security/login?BackURL=$encoded");
 		$this->type("id=MemberLoginForm_LoginForm_Email", $user);
 		$this->type("id=MemberLoginForm_LoginForm_Password", $pass);
 		$this->click("id=MemberLoginForm_LoginForm_action_dologin");
 		$this->waitForPageToLoad("5000");
-
-		$this->waitForElementPresent('.cms-content-header-info');
-		// element present 'cms-content-header-info'
+		$this->open($url);
 	}
-
+	
+	public function logout() {
+		$this->open('Security/logout');
+	}
 
 	protected function openModelAdmin($controller) {
 		$this->click("css=#Menu-$controller > a > span.text");
@@ -200,11 +209,61 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 		// and execute again
 		return $this->doUntilNoMore($selector, $callback);
 	}
+	
+	protected function deleteUser($emailAddress) {
+		$this->open('admin/security');
+		$this->click('css=th.col-Actions button');
+		$this->waitForElementPresent('css=#filter-Members-Email');
+		
+		$this->type('css=#filter-Members-Email', $emailAddress);
+		$this->click('css=#action_filter_Member_Actions');
+		sleep(1);
+		
+		if ($this->isElementPresent('css=td.col-Email:contains(' . $emailAddress .')')) {
+			$this->chooseOkOnNextConfirmation();
+			$this->click('css=#Form_EditForm_Members button.gridfield-button-delete');
+			$this->getConfirmation();
+		}
+		sleep(1);
+	}
+	
+	protected function createUser($user, $email, $pass, $group = null, $fields = null) {
+		$this->open('admin/security');
+		$this->click("css=div.ss-gridfield-buttonrow-before a[data-icon=add]");
+		$this->waitForElementPresent('#Form_ItemEditForm_SecurityID');
+		
+		list($first, $last) = explode(' ', $user);
+		$this->type('css=#Form_ItemEditForm_FirstName', $first);
+		$this->type('css=#Form_ItemEditForm_Surname', $last);
+		$this->type('css=#Form_ItemEditForm_Email', $email);
+		$this->type('css=#Password-_Password', $pass);
+		$this->type('css=#Password-_ConfirmPassword', $pass);
+		
+		if ($group) {
+			$this->clickAt('css=#Form_ItemEditForm_DirectGroups_chzn');
+			$this->clickAt('css=#Form_ItemEditForm_DirectGroups_chzn li:contains(' . $group . ')');
+		}
+		
+		$this->click('css=#Form_ItemEditForm_action_doSaveAndQuit');
+		$this->waitForElementPresent('css=#Form_EditForm_HeaderFieldImport-users');
+	}
+	
+	protected function createGroup($groupName) {
+		$this->open('admin/security');
+		$this->click('css=a.ui-tabs-anchor:contains(Groups)');
+		
+		if (!$this->isElementPresent('css=td.col-Breadcrumbs:contains(' . $groupName . ')')) {
+			$this->click("css=div.ss-gridfield-buttonrow-before a[data-icon=add]:contains('Add Group')");
+			$this->waitForElementPresent('css=#Form_ItemEditForm_Title');
+			$this->type('css=#Form_ItemEditForm_Title', $groupName);
+			$this->click('css=#Form_ItemEditForm_action_doSaveAndQuit');
+			$this->waitForElementPresent('css=#Form_EditForm_HeaderFieldImport-groups');
+		}
+	}
 
 	protected function getEditObjectID() {
 		$editUrl = $this->getLocation();
 		$idValue = $this->getEval(" '" . $editUrl . "'.substring('" . $editUrl . "'.indexOf('item/')+5, '" . $editUrl . "'.length); ");
 		return $idValue;
 	}
-
 }
