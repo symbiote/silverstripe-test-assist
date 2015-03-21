@@ -7,6 +7,14 @@
  */
 class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	
+	/**
+	 * We need to disabling backing up of globals to avoid overriding
+	 * the few globals SilverStripe relies on, like $lang for the i18n subsystem.
+	 * 
+	 * @see http://sebastian-bergmann.de/archives/797-Global-Variables-and-PHPUnit.html
+	 */
+	protected $backupGlobals = FALSE;
+	
 	private static $test_user = 'admin';
 	private static $test_pass = 'admin';
 	private static $test_browser = 'firefox';
