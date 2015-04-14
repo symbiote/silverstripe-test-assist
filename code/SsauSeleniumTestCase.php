@@ -7,6 +7,8 @@
  */
 class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	
+	public static $protected_urls = array();
+	
 	/**
 	 * We need to disabling backing up of globals to avoid overriding
 	 * the few globals SilverStripe relies on, like $lang for the i18n subsystem.
@@ -19,6 +21,8 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	private static $test_pass = 'admin';
 	private static $test_browser = 'firefox';
 	private static $test_url = 'http://localhost/silverstripe';
+	
+	protected $productionSafe = true;
 	
 	private $user;
 	private $pass;
@@ -37,6 +41,16 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 
 		$this->setBrowser($browser);
 		$this->setBrowserUrl($url);
+
+		if (!$this->productionSafe) {
+			// do a few checks to ensure we're okay to go ahead. 
+			foreach (self::$protected_urls as $protected) {
+				if (strpos($url, $protected) !== false) {
+					$this->markTestSkipped();
+					return;
+				}
+			}
+		}
 	}
 	
 	
@@ -107,15 +121,37 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	public function loginTo($url, $user = null, $pass = null) {
 		$encoded = urlencode($url);
 		
+		if (!$pass) {
+			$dets = $this->getUserDetails($user);
+			if (!$dets) {
+				throw new Exception("User $user not provided");
+			}
+			$user = $dets['user'];
+			$pass = $dets['pass'];
+		}
+
 		$user = $user ? $user : $this->user;
 		$pass = $pass ? $pass : $this->pass;
-		
+			
 		$this->open("Security/login?BackURL=$encoded");
 		$this->type("id=MemberLoginForm_LoginForm_Email", $user);
 		$this->type("id=MemberLoginForm_LoginForm_Password", $pass);
 		$this->click("id=MemberLoginForm_LoginForm_action_dologin");
 		$this->waitForPageToLoad("15000");
 		$this->open($url);
+	}
+	
+	protected function getUserDetails($user) {
+		$u = "$user.user";
+		$p = "$user.pass";
+		
+		$username = isset($_GET[$u]) ? $_GET[$u] : Config::inst()->get('SsauSeleniumTestCase', $u);
+		$password = isset($_GET[$p]) ? $_GET[$p] : Config::inst()->get('SsauSeleniumTestCase', $p);
+		
+		if (!$username) {
+			return false;
+		}
+		return array('user'=>$username, 'pass'=>$password);
 	}
 	
 	public function logout() {
