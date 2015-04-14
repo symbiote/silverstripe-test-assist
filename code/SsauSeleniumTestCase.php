@@ -39,6 +39,7 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 		$this->setBrowserUrl($url);
 	}
 	
+	
 	protected function waitForElementPresent($css, $timeout = 10) {
 		if (strpos($css, 'css=') === false && strpos($css, 'id=') === false && strpos($css, 'name=') === false) {
 			$css = "css=$css";
@@ -57,6 +58,44 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 			}
 			sleep(1);
 		}
+	}
+
+
+	/**
+	 * Repeatedly perform some function until the given selector doesn't exist in the page any more
+	 * 
+	 * @param string $selector
+	 * @param closure $callback
+	 */
+	protected function doUntilNoMore($selector, $callback) {
+		$done = false;
+		$timeout = 5;
+		
+		for ($second = 0;; $second++) {
+			if ($second >= $timeout) {
+				$done = true;
+				break;
+			}
+			try {
+				if ($this->isElementPresent($selector)) {
+					break;
+				}
+			} catch (Exception $e) {
+				
+			}
+			usleep(300); 
+		}
+		
+		// our recursion breaker
+		if ($done) {
+			return true;
+		}
+		
+		// execute whatever it is we're trying to do
+		$callback($this, $selector);
+
+		// and execute again
+		return $this->doUntilNoMore($selector, $callback);
 	}
 	
 	public function loginToCms($user = null, $pass = null) {
@@ -82,6 +121,20 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	public function logout() {
 		$this->open('Security/logout');
 	}
+
+	
+	
+	protected function getEditObjectID() {
+		$editUrl = $this->getLocation();
+		$idValue = $this->getEval(" '" . $editUrl . "'.substring('" . $editUrl . "'.indexOf('item/')+5, '" . $editUrl . "'.length); ");
+		return $idValue;
+	}
+	
+	protected function getAttributeValue($selector, $attribute) {
+		return $this->getEval('window.jQuery("' . $selector . '").attr("' . $attribute . '");');
+	}
+
+
 
 	protected function openModelAdmin($controller) {
 		$this->click("css=#Menu-$controller > a > span.text");
@@ -180,44 +233,7 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 			$this->clickAt("css=$div li label:contains($label)");
 		}
 	}
-	
-	/**
-	 * Repeatedly perform some function until the given selector doesn't exist in the page any more
-	 * 
-	 * @param string $selector
-	 * @param closure $callback
-	 */
-	protected function doUntilNoMore($selector, $callback) {
-		$done = false;
-		$timeout = 5;
-		
-		for ($second = 0;; $second++) {
-			if ($second >= $timeout) {
-				$done = true;
-				break;
-			}
-			try {
-				if ($this->isElementPresent($selector)) {
-					break;
-				}
-			} catch (Exception $e) {
-				
-			}
-			usleep(300); 
-		}
-		
-		// our recursion breaker
-		if ($done) {
-			return true;
-		}
-		
-		// execute whatever it is we're trying to do
-		$callback($this, $selector);
 
-		// and execute again
-		return $this->doUntilNoMore($selector, $callback);
-	}
-	
 	protected function deleteUser($emailAddress) {
 		$this->open('admin/security');
 		$this->click('css=th.col-Actions button');
@@ -269,13 +285,4 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 		}
 	}
 
-	protected function getEditObjectID() {
-		$editUrl = $this->getLocation();
-		$idValue = $this->getEval(" '" . $editUrl . "'.substring('" . $editUrl . "'.indexOf('item/')+5, '" . $editUrl . "'.length); ");
-		return $idValue;
-	}
-	
-	protected function getAttributeValue($selector, $attribute) {
-		return $this->getEval('window.jQuery("' . $selector . '").attr("' . $attribute . '");');
-	}
 }
