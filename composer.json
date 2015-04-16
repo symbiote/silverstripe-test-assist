@@ -5,16 +5,10 @@
 	"keywords": ["silverstripe", "testing", "selenium", "continuous integration"],
 	"license": "BSD-3-Clause",
 	"authors": [
-	{
-		"name": "Marcus Nyeholt",
-		"email": "marcus@silverstripe.com.au"
-	}
+		{
+			"name": "Marcus Nyeholt",
+			"email": "marcus@silverstripe.com.au"
+		}
 	],
-	"require": {
-	    "phpunit/phpunit": "3.7.*",
-		"phpunit/php-code-coverage": "~1.2",
-	    "phpunit/phpunit-selenium": ">=1.2"
-	},
 	"minimum-stability": "dev"
-
 }
