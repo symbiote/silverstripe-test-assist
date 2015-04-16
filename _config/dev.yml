@@ -1,5 +1,6 @@
 ---
 Name: DevelopmentAdmin
+After: '/framework#dev'
 ---
 DevelopmentAdmin:
   registered_controllers:

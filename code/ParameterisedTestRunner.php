@@ -13,7 +13,16 @@ class ParameterisedTestRunner extends TestRunner
 	
 	private static $allowed_actions = array(
 		'module',
+		'coverage/module/$ModuleName' => 'coverageModule',
+		'coverage' => 'coverageAll',
 	);
+	
+	/**
+	 * The list of modules we're testing. Captures info for code-coverage
+	 *
+	 * @var array
+	 */
+	protected $moduleList = array();
 	
 	/**
 	 * Override the default reporter with a custom configured subclass.
@@ -30,24 +39,55 @@ class ParameterisedTestRunner extends TestRunner
 		if (!self::$default_reporter) self::set_reporter(Director::is_cli() ? 'CliDebugView' : 'DebugView');
 	}
 	
+	/**
+	 * 
+	 * Somewhat messy and god-method, but this override exists because
+	 * 
+	 * a) we want to change the configuration of items from the user-set TESTING_CONFIG 
+	 * variable if it exists
+	 * 
+	 * b) PhpUnitWrapper is referenced with explicit class settings, rather than allowing us to 
+	 * override as we like (to change code coverage behaviour). 
+	 * 
+	 * @global type TESTING_CONFIG
+	 * @global type $TESTING_CONFIG
+	 * @global type $databaseConfig
+	 * @param type $classList
+	 * @param type $coverage
+	 * @throws Exception
+	 */
 	function runTests($classList, $coverage = false) {
 		global $TESTING_CONFIG;
-		
+
 		$startTime = microtime(true);
 		Config::inst()->update('Director', 'environment_type', 'dev');
-		
+
 		if (isset($TESTING_CONFIG['database']) && $TESTING_CONFIG['database'] != 'silverstripe_testing') {
 			global $databaseConfig;
 			$newConfig = $databaseConfig;
 			$newConfig = array_merge($databaseConfig, $TESTING_CONFIG);
 			$newConfig['memory'] = isset($TESTING_CONFIG['memory']) ? $TESTING_CONFIG['memory'] : true;
+			
+			$newDbName = $TESTING_CONFIG['database'];
+			
 			$type = isset($newConfig['type']) ? $newConfig['type'] : 'MySQL';
 			Debug::message("Connecting to new $type database ${TESTING_CONFIG['database']} as defined by testing config");
 			DB::connect($newConfig);
-			DB::getConn()->selectDatabase($TESTING_CONFIG['database']);
+			if (!DB::getConn()->databaseExists($newDbName)) {
+				DB::getConn()->createDatabase($newDbName);
+			}
+			if (!DB::getConn()->selectDatabase($newDbName)) {
+				throw new Exception("Could not find database to use for testing");
+			}
+			
+			if ($newConfig['memory']) {
+				Debug::message("Using in memory database");
+			}
+
 			$dbadmin = new DatabaseAdmin();
 			$dbadmin->clearAllData();
 			if (!(isset($_REQUEST['build']) && $_REQUEST['build'] == 0)) {
+				Debug::message("Executing dev/build as requested");
 				$dbadmin->doBuild(true);
 			}
 		}
@@ -64,6 +104,17 @@ class ParameterisedTestRunner extends TestRunner
 		if($this->request->getVar('SkipTests')) {
 			$skipTests = explode(',', $this->request->getVar('SkipTests'));
 		}
+		
+		$abstractClasses = array();
+		foreach($classList as $className) {
+			// Ensure that the autoloader pulls in the test class, as PHPUnit won't know how to do this.
+			class_exists($className);
+			$reflection = new ReflectionClass($className);
+			if ($reflection->isAbstract()) {
+				array_push($abstractClasses, $className);
+			}
+		}
+		
 		$classList = array_diff($classList, $skipTests);
 		
 		// run tests before outputting anything to the client
@@ -106,17 +157,11 @@ class ParameterisedTestRunner extends TestRunner
 		$results->addListener($reporter);
 
 		if($coverage === true) {
-			$results->collectCodeCoverageInformation(true);
+			$coverer = $this->getCodeCoverage();
+			$results->setCodeCoverage($coverer);
 			$suite->run($results);
-
-			if(!file_exists(ASSETS_PATH . '/coverage-report')) mkdir(ASSETS_PATH . '/coverage-report');
-			PHPUnit_Util_Report::render($results, ASSETS_PATH . '/coverage-report/');
-			$coverageApp = ASSETS_PATH . '/coverage-report/' . preg_replace('/[^A-Za-z0-9]/','_',preg_replace('/(\/$)|(^\/)/','',Director::baseFolder())) . '.html';
-			$coverageTemplates = ASSETS_PATH . '/coverage-report/' . preg_replace('/[^A-Za-z0-9]/','_',preg_replace('/(\/$)|(^\/)/','',realpath(TEMP_FOLDER))) . '.html';
-			echo "<p>Coverage reports available here:<ul>
-				<li><a href=\"$coverageApp\">Coverage report of the application</a></li>
-				<li><a href=\"$coverageTemplates\">Coverage report of the templates</a></li>
-			</ul>";
+			$writer = new PHP_CodeCoverage_Report_HTML();
+			$writer->process($coverer, Director::baseFolder() . '/ssautesting/html/code-coverage-report');
 		} else {
 			$suite->run($results);
 		}
@@ -148,10 +193,48 @@ class ParameterisedTestRunner extends TestRunner
 		// Todo: we should figure out how to pass this data back through Director more cleanly
 		if(Director::is_cli() && ($results->failureCount() + $results->errorCount()) > 0) exit(2);
 	}
+	
+	protected function getCodeCoverage() {
+		$coverage = new PHP_CodeCoverage();
+		
+		$filter = $coverage->filter();
+
+		$filter->addFileToBlacklist(Director::baseFolder() .'/mysite/local.conf.php');
+		$filter->addDirectoryToBlacklist(Director::baseFolder() .'/mysite/scripts');
+
+		$modules = $this->moduleDirectories();
+
+		foreach(TestRunner::config()->coverage_filter_dirs as $dir) {
+			if($dir[0] == '*') {
+				$dir = substr($dir, 1);
+				foreach ($modules as $module) {
+					$filter->addDirectoryToBlacklist(BASE_PATH . "/$module/$dir");
+				}
+			} else {
+				$filter->addDirectoryToBlacklist(BASE_PATH . '/' . $dir);
+			}
+		}
+		
+		// whitelist for specific modules
+		foreach ($this->moduleList as $directory) {
+			$filter->addFileToBlacklist($directory .'/_config.php');
+			$filter->addDirectoryToWhitelist($directory . '/code');
+			$filter->addDirectoryToWhitelist($directory . '/src');
+		}
+
+		$filter->addFileToBlacklist(__FILE__, 'PHPUNIT');
+
+		return $coverage;
+	}
 
 	/**
 	 * Run tests for one or more "modules".
 	 * A module is generally a toplevel folder, e.g. "mysite" or "framework".
+	 * 
+	 * @OVERRIDE
+	 * 
+	 * Over-ridden to allow selection of specific test type if specified on the command line
+	 * 
 	 */
 	public function module($request, $coverage = false) {
 		self::use_test_manifest();
@@ -167,7 +250,7 @@ class ParameterisedTestRunner extends TestRunner
 
 		foreach($moduleNames as $moduleName) {
 			$classesForModule = ClassInfo::classes_for_folder($moduleName);
-			
+			$this->moduleList[] = Director::baseFolder() . DIRECTORY_SEPARATOR . $moduleName;
 			if($classesForModule) {
 				foreach($classesForModule as $className) {
 					if(class_exists($className) && is_subclass_of($className, $testClassParent)) {
@@ -181,6 +264,13 @@ class ParameterisedTestRunner extends TestRunner
 		$this->runTests($classNames, $coverage);
 	}
 
+	/**
+	 * @OVERRIDE
+	 * 
+	 * Overridden to prevent deletion of custom defined tmpdb
+	 * 
+	 * @global type $TESTING_CONFIG
+	 */
 	function tearDown() {
 		global $TESTING_CONFIG;
 		if (!isset($TESTING_CONFIG['database'])) {
@@ -189,5 +279,21 @@ class ParameterisedTestRunner extends TestRunner
 		if (PHP_SAPI != 'cli') {
 			DB::set_alternative_database_name(null);
 		}
+	}
+
+	/**
+	 * Copied from PHPUnitWrapper
+	 * 
+	 * @return array
+	 */
+	protected function moduleDirectories() {
+		$files = scandir(BASE_PATH);
+		$modules = array();
+		foreach($files as $file) {
+			if(is_dir(BASE_PATH . "/$file") && (file_exists(BASE_PATH . "/$file/_config.php") || is_dir(BASE_PATH . "/$file/_config"))) {
+				$modules[] = $file;
+			}
+		}
+		return $modules;
 	}
 }

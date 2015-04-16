@@ -12,6 +12,7 @@
 	],
 	"require": {
 	    "phpunit/phpunit": "3.7.*",
+		"phpunit/php-code-coverage": "~1.2",
 	    "phpunit/phpunit-selenium": ">=1.2"
 	},
 	"minimum-stability": "dev"
