@@ -9,9 +9,9 @@
 class ParameterisedTestRunner extends TestRunner
 {
 	// overridden on the base due to private declaration in TestRunner
-	private static $default_reporter;
+	public static $default_reporter;
 	
-	private static $allowed_actions = array(
+	public static $allowed_actions = array(
 		'module',
 	);
 	

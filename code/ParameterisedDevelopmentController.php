@@ -10,7 +10,7 @@
  */
 class ParameterisedDevelopmentController extends DevelopmentAdmin
 {
-	private static $allowed_actions = array('tests');
+	public static $allowed_actions = array('tests');
 	
 	function tests($request) {
 		return new ParameterisedTestRunner();
