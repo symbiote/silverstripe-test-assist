@@ -86,7 +86,9 @@ class ParameterisedTestRunner extends TestRunner
 			}
 
 			$dbadmin = new DatabaseAdmin();
-			if (isset($_REQUEST['clear']) && $_REQUEST['clear']) {
+			if (isset($_REQUEST['clear']) && $_REQUEST['clear'] == 0) {
+				
+			} else {
 				$dbadmin->clearAllData();
 			}
 
