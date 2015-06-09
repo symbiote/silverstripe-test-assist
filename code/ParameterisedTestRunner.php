@@ -86,7 +86,10 @@ class ParameterisedTestRunner extends TestRunner
 			}
 
 			$dbadmin = new DatabaseAdmin();
-			$dbadmin->clearAllData();
+			if (isset($_REQUEST['clear']) && $_REQUEST['clear']) {
+				$dbadmin->clearAllData();
+			}
+
 			if (!(isset($_REQUEST['build']) && $_REQUEST['build'] == 0)) {
 				Debug::message("Executing dev/build as requested");
 				$dbadmin->doBuild(true);
