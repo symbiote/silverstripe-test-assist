@@ -13,6 +13,7 @@ class ParameterisedTestRunner extends TestRunner
 	
 	private static $allowed_actions = array(
 		'module',
+		'only',
 		'coverage/module/$ModuleName' => 'coverageModule',
 		'coverage' => 'coverageAll',
 	);
@@ -262,6 +263,31 @@ class ParameterisedTestRunner extends TestRunner
 		}
 
 		$this->runTests($classNames, $coverage);
+	}
+	
+	/**
+	 * Run only a single test class or a comma-separated list of tests
+	 */
+	public function only($request, $coverage = false) {
+		self::use_test_manifest();
+		if($request->param('TestCase') == 'all') {
+			$this->all();
+		} else {
+			$testClassParent = $request->getVar('test_type');
+			if (!$testClassParent) {
+				$testClassParent = 'SapphireTest';
+			}
+
+			$classNames = explode(',', $request->param('TestCase'));
+			foreach($classNames as $className) {
+				if(!class_exists($className) || !is_subclass_of($className, $testClassParent)) {
+					user_error("TestRunner::only(): Invalid TestCase '$className', cannot find matching class",
+						E_USER_ERROR);
+				}
+			}
+			
+			$this->runTests($classNames, $coverage);
+		}
 	}
 
 	/**
