@@ -142,8 +142,8 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	}
 	
 	protected function getUserDetails($user) {
-		$u = "$user.user";
-		$p = "$user.pass";
+		$u = "{$user}_user";
+		$p = "{$user}_pass";
 		
 		$username = isset($_GET[$u]) ? $_GET[$u] : Config::inst()->get('SsauSeleniumTestCase', $u);
 		$password = isset($_GET[$p]) ? $_GET[$p] : Config::inst()->get('SsauSeleniumTestCase', $p);
