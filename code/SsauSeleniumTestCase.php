@@ -113,6 +113,9 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	}
 	
 	public function loginToCms($user = null, $pass = null) {
+		if (!$user) {
+			$user = 'admin';
+		}
 		$this->loginTo('admin/pages', $user, $pass);
 		$this->waitForElementPresent('.cms-content-header-info');
 		// element present 'cms-content-header-info'
@@ -157,8 +160,6 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	public function logout() {
 		$this->open('Security/logout');
 	}
-
-	
 	
 	protected function getEditObjectID() {
 		$editUrl = $this->getLocation();
@@ -171,6 +172,9 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	}
 
 
+	////
+	// MODEL ADMIN
+	////
 
 	protected function openModelAdmin($controller) {
 		$this->click("css=#Menu-$controller > a > span.text");
@@ -270,6 +274,11 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 		}
 	}
 
+	////
+	// SECURITY THINGS
+	///
+	
+	
 	protected function deleteUser($emailAddress) {
 		$this->open('admin/security');
 		$this->click('css=th.col-Actions button');
@@ -319,6 +328,51 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 			$this->click('css=#Form_ItemEditForm_action_doSaveAndQuit');
 			$this->waitForElementPresent('css=#Form_EditForm_HeaderFieldImport-groups');
 		}
+	}
+	
+	
+	////
+	// PAGES THINGS
+	////
+	
+//	protected function 
+	
+	protected function openPage($titlePath, $from = null) {
+		if (!$from) {
+			$this->open('admin/pages/');
+		}
+		
+		$this->waitForElementPresent('css=ul.jstree-no-checkboxes');
+		
+		if ($this->isElementPresent('css=ul.jstree-no-checkboxes li.Root.jstree-closed')) {
+			$this->click('css=ul.jstree-no-checkboxes li.Root.jstree-closed > ins.jstree-icon');
+			usleep(200000);
+		}
+		
+		if ($this->isElementPresent('css=li.class-Site.jstree-closed')) {
+			$this->click('css=li.class-Site.jstree-closed > ins.jstree-icon');
+			usleep(200000);
+		}
+		
+		
+		$segments = explode('/', $titlePath);
+		$last = array_pop($segments);
+		if (count($segments)) {
+			foreach ($segments as $seg) {
+				// find and open them
+				if ($this->isElementPresent("css=li.jstree-closed a:contains($seg)")) {
+					$this->click("css=li.jstree-closed a:contains($seg) > ins.jstree-icon");
+					usleep(200000);
+				}
+			}
+		}
+		
+		if ($this->isElementPresent("css=div.jstree li a:contains($last)")) {
+			$this->click("css=div.jstree li a:contains($last)");
+		}
+		
+		$this->waitForElementPresent('css=#Form_EditForm_Title');
+		$this->waitForValue("css=#Form_EditForm_Title", $last);
 	}
 
 }
