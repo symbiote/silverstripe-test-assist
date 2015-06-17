@@ -113,7 +113,7 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	}
 	
 	public function loginToCms($user = null, $pass = null) {
-		$this->loginTo('admin/pages');
+		$this->loginTo('admin/pages', $user, $pass);
 		$this->waitForElementPresent('.cms-content-header-info');
 		// element present 'cms-content-header-info'
 	}
