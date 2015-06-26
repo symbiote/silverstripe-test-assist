@@ -369,10 +369,10 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 		
 		if ($this->isElementPresent("css=div.jstree li a:contains($last)")) {
 			$this->click("css=div.jstree li a:contains($last)");
+			$this->waitForElementPresent('css=#Form_EditForm_Title');
+			$this->waitForValue("css=#Form_EditForm_Title", $last);
+			return true;
 		}
-		
-		$this->waitForElementPresent('css=#Form_EditForm_Title');
-		$this->waitForValue("css=#Form_EditForm_Title", $last);
+		return false;
 	}
-
 }
