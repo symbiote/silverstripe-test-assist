@@ -14,7 +14,8 @@ To run just the selenium tests, a commandline such as
 ```
 php framework/cli-script.php dev/tests/module/ssautesting \ 
   flush=1 build=1 selenium_host=127.0.0.1 browser=firefox \
-  test_url=http://my.silverstripe.site/ test_type=SsauSeleniumTestCase SkipTests=ssauseleniumtestcase
+  test_url=http://my.silverstripe.site/ test_type=SsauSeleniumTestCase SkipTests=ssauseleniumtestcase \
+  admin_user=admin admin_pass=admin
 ```
 
 Note: The trailing slash in the URL is _important_!
@@ -33,3 +34,19 @@ framebuffer, meaning the windows don't launch all over your screen!
 
 However it can be useful to run the selenium server directly from the commandline to debug why 
 a test has failed. 
+
+## Diagnostic tools
+
+Swap from using MySQLDatabase to DevMySQLDatabase in your DB config
+
+```yml
+---
+Name: dev_filters
+---
+Injector:
+  RequestProcessor:
+    properties:
+      filters: 
+        - %$QueryDisplayFilter
+        - %$RequestTimerFilter
+```
