@@ -64,6 +64,9 @@ class ParameterisedTestRunner extends TestRunner
 		Config::inst()->update('Director', 'environment_type', 'dev');
 
 		if (isset($TESTING_CONFIG['database']) && $TESTING_CONFIG['database'] != 'silverstripe_testing') {
+            if (class_exists("Multisites")) {
+                Multisites::inst()->resetCurrentSite();
+            }
 			global $databaseConfig;
 			$newConfig = $databaseConfig;
 			$newConfig = array_merge($databaseConfig, $TESTING_CONFIG);
