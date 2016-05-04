@@ -1,4 +1,4 @@
-# SilverStripe Australia testing extensions module
+# SilverStripe Australia Testing Extensions Module
 
 Adds several helpers to the base SilverStripe testing framework to simplify
 hooking the testing process into CI servers such as Jenkins, by parameterising
