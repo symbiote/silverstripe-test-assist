@@ -1,5 +1,7 @@
 # SilverStripe Australia Testing Extensions Module
 
+**This version is required for projects running early SS 3.1 versions and lower.**
+
 Adds several helpers to the base SilverStripe testing framework to simplify
 hooking the testing process into CI servers such as Jenkins, by parameterising
 several configuration options. 

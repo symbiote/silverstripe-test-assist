@@ -9,3 +9,7 @@ DevelopmentAdmin:
       links:
         tests: 'See a list of unit tests to run'
         'tests/all': 'Run all tests'
+        
+Director:
+  rules:
+    dev: ParameterisedDevelopmentController
