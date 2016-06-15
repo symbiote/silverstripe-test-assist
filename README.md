@@ -92,7 +92,7 @@ modules
 class_name: FunctionalTester
 modules:
     enabled:
-        - \transportapi\Helper\Functional
+        - \modulename\Helper\Functional
         - WebDriver # new
         - \ssautesting\Helper\SilverstripeFunctional # new
 
