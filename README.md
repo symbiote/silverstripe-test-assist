@@ -50,3 +50,95 @@ Injector:
         - %$QueryDisplayFilter
         - %$RequestTimerFilter
 ```
+
+
+## Codeception
+
+To hook codeception up for your project, you will need to create a 
+codeception.yml config file at the top level of your project. An examples of 
+this can be found in `ssautesting/sample-config`
+
+**codeception.yml** defines the paths of modules to be included in the test runs
+
+Within your module, you can then create a namespaced project specific set of 
+tests to be included in that top level path. 
+
+* mkdir modulename/codeception
+* cd modulename/codeception
+* ../../vendor/bin/codecept bootstrap --namespace modulenamespace
+* mv codeception.yml codeception.dist.yml
+* touch .gitignore
+
+Note that 'modulenamespace' can be anything, as long as it's a valid PHP 
+namespace string
+
+Next, create a new `codeception.yml` file that contains _just_ your local
+environment codeception configuration; this will typically be the local URL
+for developer testing, ie
+
+```
+modules:
+    config:
+        WebDriver:
+            url: http://project.clients.sslocal
+            browser: chrome 
+
+```
+
+Update `modulename/codeception/tests/functional.suite.xml` and add a couple of 
+modules
+
+```
+class_name: FunctionalTester
+modules:
+    enabled:
+        - \transportapi\Helper\Functional
+        - WebDriver # new
+        - \ssautesting\Helper\SilverstripeFunctional # new
+
+```
+
+Update `modulename/codeception/tests/_bootstrap.php` to include the 
+SilverstripFunctional helper
+
+```
+<?php
+// This is global bootstrap for autoloading
+include_once 'ssautesting/code/codeception/SilverstripeFunctional.php';
+```
+
+
+Now, add the following to .gitignore
+
+```
+codeception.yml
+/tests/_output/
+```
+
+Include your module in the top level `codeception.yml`
+
+```
+include:
+  - modulename/codeception
+
+```
+
+And lastly, start writing tests! In `modulename/codeception/tests/functional/FirstTestCept.php`
+
+```
+<?php
+
+use \Codeception\Util\Locator;
+
+$I = new \modulenamespace\FunctionalTester($scenario);
+
+$I->wantTo("Test the homepage");
+$I->amOnPage("/");
+$I->see("Home");
+
+```
+
+From the top level of the project
+
+`$  ./vendor/bin/codecept run`
+
