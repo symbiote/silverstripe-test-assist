@@ -152,7 +152,13 @@ class ParameterisedTestRunner extends TestRunner
 		}
 		// END CUSTOMISATION
 		
-		$reporter = new $clazz;
+        // CUSTOMISATION
+		$outputFile = null;
+		if ($TESTING_CONFIG['logfile']) {
+			$outputFile = BASE_PATH . '/'. $TESTING_CONFIG['logfile'];
+		}
+        
+		$reporter = new $clazz($outputFile);
 		$default = self::$default_reporter;
 
 		self::$default_reporter->writeHeader("Sapphire Test Runner");
@@ -177,13 +183,12 @@ class ParameterisedTestRunner extends TestRunner
 		
 		if(!Director::is_cli()) echo '<div class="trace">';
 		
-		// CUSTOMISATION
-		$outputFile = null;
-		if ($TESTING_CONFIG['logfile']) {
-			$outputFile = BASE_PATH . '/'. $TESTING_CONFIG['logfile'];
-		}
+        if (method_exists($reporter, 'writeResults')) {
+            $reporter->writeResults($outputFile);
+        } else {
+            $reporter->flush();
+        }
 		
-		$reporter->writeResults($outputFile);
 		// END CUSTOMISATION
 
 		$endTime = microtime(true);
