@@ -15,7 +15,17 @@ class DevMySQLDatabase extends MySQLDatabase {
 	public $userCode = array('mysite');
 	
 	public function query($sql, $errorLevel = E_USER_ERROR) {
-		$query = new stdClass;
+		$this->recordQuery($sql);
+		return parent::query($sql, $errorLevel);
+	}
+    
+    public function preparedQuery($sql, $parameters, $errorLevel = E_USER_ERROR) {
+        $this->recordQuery($sql);
+        return parent::preparedQuery($sql, $parameters, $errorLevel);
+    }
+    
+    protected function recordQuery($sql) {
+        $query = new stdClass;
 		$query->query = $sql;
 		$query->source = '';
 		$query->count = 0;
@@ -36,8 +46,7 @@ class DevMySQLDatabase extends MySQLDatabase {
 
 			$cur->count = $cur->count + 1;
 			if ($cur->count > 2 && !isset($cur->source)) {
-				// lets see where it's coming from 
-				$trace = $this->userCaller();
+				// lets see where it's coming from
 				if ($trace) {
 					$cur->source = 'Line ' . $trace['line'] . ' in ' . $trace['file'];
 				}
@@ -48,8 +57,7 @@ class DevMySQLDatabase extends MySQLDatabase {
 		
 		// mark as having executed this query
 		$this->allQueries[$sql] = true;
-		return parent::query($sql, $errorLevel);
-	}
+    }
 	
 	public function getDuplicateQueries() {
 		$actualDupes = array();
@@ -64,7 +72,7 @@ class DevMySQLDatabase extends MySQLDatabase {
 	
 	
 	protected function userCaller() {
-		$bt = debug_backtrace();
+		$bt = debug_backtrace(2);
 		if (!isset($bt[5])) {
 			return;
 		}

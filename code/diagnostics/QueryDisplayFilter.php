@@ -63,7 +63,7 @@ class QueryDisplayFilter implements RequestFilter {
 				$div = '<div id="query-stat-debugger" '
 					. 'style="position: fixed; bottom: 0; right: 0; border: 2px solid red; background: #fff; '
 					. 'font-size: 8px; font-family: sans-serif; width: 100px; z-index: 2000; padding: 1em;'
-					. 'overflow: auto; max-height: 100px;">'
+					. 'overflow: auto; max-height: 500px;">'
 					. '<p id="debug-all-queries-list">Total of ' . count($queries) . ' queries</p>'
 					. '<p id="debug-dupe-queries-list">Total of ' . count($dupes) . ' duplicates</p>'
 					. $html
