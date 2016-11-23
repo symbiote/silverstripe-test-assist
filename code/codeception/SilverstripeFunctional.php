@@ -14,6 +14,11 @@ class SilverstripeFunctional extends \Codeception\Module
 		$this->I = $this->moduleContainer->getModule("WebDriver");
 	}
 
+    
+    public function getElements($css) {
+        return $this->I->_findElements($css);
+    }
+
 	/**
 	 * Alias method for nice readability
 	 *
