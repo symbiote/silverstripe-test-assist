@@ -55,10 +55,15 @@ Injector:
 ## Codeception
 
 To hook codeception up for your project, you will need to create a 
-codeception.yml config file at the top level of your project. An examples of 
-this can be found in `ssautesting/sample-config`
+codeception.yml config file at the top level of your project.
 
-**codeception.yml** defines the paths of modules to be included in the test runs
+```
+paths:
+  log: log
+```
+
+**codeception.yml** defines the paths of modules to be included in the
+test runs.
 
 Within your module, you can then create a namespaced project specific set of 
 tests to be included in that top level path. 
@@ -107,6 +112,14 @@ SilverstripFunctional helper
 include_once 'ssautesting/code/codeception/SilverstripeFunctional.php';
 ```
 
+Update `modulename/codeception/tests/unit/_bootstrap.php` to set up the
+environment for unit testing:
+
+```
+<?php
+// Unit testing specific setup
+include_once 'framework/tests/bootstrap.php';
+```
 
 Now, add the following to .gitignore
 
@@ -136,6 +149,19 @@ $I->wantTo("Test the homepage");
 $I->amOnPage("/");
 $I->see("Home");
 
+```
+
+In `modulename/codeception/tests/unit/SmokeTest.php`
+
+```
+<?php
+
+class PageTest extends SapphireTest {
+
+    public function testMyMethod() {
+        $this->assertEquals(2, Page::MyMethod());
+    }
+}
 ```
 
 From the top level of the project
