@@ -1,5 +1,5 @@
 <?php
-namespace ssautesting\Helper;
+namespace Symbiote\TestAssist\Helper;
 
 use Codeception\Lib\ModuleContainer;
 // here you can define custom actions

@@ -99,7 +99,7 @@ modules:
     enabled:
         - \modulename\Helper\Functional
         - WebDriver # new
-        - \ssautesting\Helper\SilverstripeFunctional # new
+        - \Symbiote\TestAssist\Helper\SilverstripeFunctional # new
 
 ```
 
