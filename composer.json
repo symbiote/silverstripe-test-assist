@@ -1,5 +1,5 @@
 {
-	"name": "silverstripe-australia/ssautesting",
+	"name": "symbiote/silverstripe-test-assist",
 	"description": "Some extensions to the default SS test structures to allow parametrisation in CI builds, as well as a framework for selenium testing.",
 	"type": "silverstripe-module",
 	"keywords": ["silverstripe", "testing", "selenium", "continuous integration"],
