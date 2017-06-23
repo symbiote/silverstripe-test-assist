@@ -1,10 +1,10 @@
-# SilverStripe Australia Testing Extensions Module
+# Symbiote Testing Extensions Module
 
 Adds several helpers to the base SilverStripe testing framework to simplify
 hooking the testing process into CI servers such as Jenkins, by parameterising
 several configuration options. 
 
-Additionally, the module provides the `SsauSeleniumTestCase` which provides a 
+Additionally, the module provides the `SymbioteSeleniumTestCase` which provides a 
 simpler API for writing Selenium powered tests. 
 
 ## Selenium
@@ -12,9 +12,9 @@ simpler API for writing Selenium powered tests.
 To run just the selenium tests, a commandline such as 
 
 ```
-php framework/cli-script.php dev/tests/module/ssautesting \ 
+php framework/cli-script.php dev/tests/module/silverstripe-test-assist \ 
   flush=1 build=1 selenium_host=127.0.0.1 browser=firefox \
-  test_url=http://my.silverstripe.site/ test_type=SsauSeleniumTestCase SkipTests=ssauseleniumtestcase \
+  test_url=http://my.silverstripe.site/ test_type=SymbioteSeleniumTestCase SkipTests=symbioteseleniumtestcase \
   admin_user=admin admin_pass=admin
 ```
 
@@ -109,7 +109,7 @@ SilverstripFunctional helper
 ```
 <?php
 // This is global bootstrap for autoloading
-include_once 'ssautesting/code/codeception/SilverstripeFunctional.php';
+include_once 'silverstripe-test-assist/code/codeception/SilverstripeFunctional.php';
 ```
 
 Update `modulename/codeception/tests/unit/_bootstrap.php` to set up the

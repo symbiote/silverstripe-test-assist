@@ -3,7 +3,7 @@
 /**
  * A test runnner that accepts several parameters for setting things
  * like the test reporter to use, the 
- * @author Marcus Nyeholt <marcus@silverstripe.com.au>
+ * @author Marcus Nyeholt <marcus@symbiote.com.au>
  *
  */
 class ParameterisedTestRunner extends TestRunner
@@ -176,7 +176,7 @@ class ParameterisedTestRunner extends TestRunner
 			$results->setCodeCoverage($coverer);
 			$suite->run($results);
 			$writer = new PHP_CodeCoverage_Report_HTML();
-			$writer->process($coverer, Director::baseFolder() . '/ssautesting/html/code-coverage-report');
+			$writer->process($coverer, Director::baseFolder() . '/silverstripe-test-assist/html/code-coverage-report');
 		} else {
 			$suite->run($results);
 		}

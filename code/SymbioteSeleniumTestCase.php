@@ -2,10 +2,10 @@
 
 /**
  * 
- * @author <marcus@silverstripe.com.au>
+ * @author <marcus@symbiote.com.au>
  * @license BSD License http://www.silverstripe.org/bsd-license
  */
-class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
+class SymbioteSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 	
 	public static $protected_urls = array();
 	
@@ -33,11 +33,11 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 			$this->setHost($_GET['selenium_host']);
 		}
 		
-		$this->user = isset($_GET['user']) ? $_GET['user'] : Config::inst()->get('SsauSeleniumTestCase', 'test_user');
-		$this->pass = isset($_GET['pass']) ? $_GET['pass'] : Config::inst()->get('SsauSeleniumTestCase', 'test_pass');
+		$this->user = isset($_GET['user']) ? $_GET['user'] : Config::inst()->get('SymbioteSeleniumTestCase', 'test_user');
+		$this->pass = isset($_GET['pass']) ? $_GET['pass'] : Config::inst()->get('SymbioteSeleniumTestCase', 'test_pass');
 		
-		$browser = isset($_GET['browser']) ? $_GET['browser'] : Config::inst()->get('SsauSeleniumTestCase', 'test_browser');
-		$url = isset($_GET['test_url']) ? $_GET['test_url'] : Config::inst()->get('SsauSeleniumTestCase', 'test_url');
+		$browser = isset($_GET['browser']) ? $_GET['browser'] : Config::inst()->get('SymbioteSeleniumTestCase', 'test_browser');
+		$url = isset($_GET['test_url']) ? $_GET['test_url'] : Config::inst()->get('SymbioteSeleniumTestCase', 'test_url');
 
 		$this->setBrowser($browser);
 		$this->setBrowserUrl($url);
@@ -148,8 +148,8 @@ class SsauSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 		$u = "{$user}_user";
 		$p = "{$user}_pass";
 		
-		$username = isset($_GET[$u]) ? $_GET[$u] : Config::inst()->get('SsauSeleniumTestCase', $u);
-		$password = isset($_GET[$p]) ? $_GET[$p] : Config::inst()->get('SsauSeleniumTestCase', $p);
+		$username = isset($_GET[$u]) ? $_GET[$u] : Config::inst()->get('SymbioteSeleniumTestCase', $u);
+		$password = isset($_GET[$p]) ? $_GET[$p] : Config::inst()->get('SymbioteSeleniumTestCase', $p);
 		
 		if (!$username) {
 			return false;
