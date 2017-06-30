@@ -11,6 +11,7 @@
 		}
 	],
 	"extra": {
+		"installer-name": "test-assist",
 		"branch-alias": {
 			"dev-master": "1.7.x-dev"
 		}
