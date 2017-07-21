@@ -176,7 +176,7 @@ class ParameterisedTestRunner extends TestRunner
 			$results->setCodeCoverage($coverer);
 			$suite->run($results);
 			$writer = new PHP_CodeCoverage_Report_HTML();
-			$writer->process($coverer, Director::baseFolder() . '/silverstripe-test-assist/html/code-coverage-report');
+			$writer->process($coverer, Director::baseFolder() . '/test-assist/html/code-coverage-report');
 		} else {
 			$suite->run($results);
 		}

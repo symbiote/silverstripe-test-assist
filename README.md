@@ -12,7 +12,7 @@ simpler API for writing Selenium powered tests.
 To run just the selenium tests, a commandline such as 
 
 ```
-php framework/cli-script.php dev/tests/module/silverstripe-test-assist \ 
+php framework/cli-script.php dev/tests/module/test-assist \ 
   flush=1 build=1 selenium_host=127.0.0.1 browser=firefox \
   test_url=http://my.silverstripe.site/ test_type=SymbioteSeleniumTestCase SkipTests=symbioteseleniumtestcase \
   admin_user=admin admin_pass=admin
@@ -109,7 +109,7 @@ SilverstripFunctional helper
 ```
 <?php
 // This is global bootstrap for autoloading
-include_once 'silverstripe-test-assist/code/codeception/SilverstripeFunctional.php';
+include_once 'test-assist/code/codeception/SilverstripeFunctional.php';
 ```
 
 Update `modulename/codeception/tests/unit/_bootstrap.php` to set up the
