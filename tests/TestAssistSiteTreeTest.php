@@ -5,9 +5,15 @@
  * @subpackage tests
  */
 class TestAssistSiteTreeTest extends FunctionalTest {
-	protected $pages = array();
-
 	protected $usesDatabase = true;
+
+	/**
+	 * Need this off for testGetCMSFields() so if the user is redirected away
+	 * from the CMS page, it's detected as a permission issue or similar.
+	 */
+	protected $autoFollowRedirection = false;
+
+	protected $pages = array();
 
 	protected $oldErrorLevel;
 
@@ -23,16 +29,8 @@ class TestAssistSiteTreeTest extends FunctionalTest {
 	{
 		parent::setUp();
 
-		$pageCount = SiteTree::get()->count();
-
-		// If pages are already in the DB, use those instead.
-		if ($pageCount > 0) {
-			// todo(Jake): Allow config to exclude certain page types
-			$this->pages = SiteTree::get();
-		}
-
 		// Create pages / objects as ADMIN
-		if (!$this->pages && $pageCount == 0) {
+		if (!$this->pages) {
 			// NOTE(Jake): Allow use of "Controller::curr()" in onBeforeWrite.
 			$stubController = new Controller;
 			$stubController->setRequest(new SS_HTTPRequest(
@@ -133,6 +131,9 @@ class TestAssistSiteTreeTest extends FunctionalTest {
 				}
 				$page = $class::create();
 				$page->Title = $class.' Test Page';
+				if ($page instanceof HomePage) {
+					$page->URLSegment = 'home';
+				}
 				$page->write();
 				$page->doPublish();
 				$this->pages[] = $page;
@@ -156,11 +157,18 @@ class TestAssistSiteTreeTest extends FunctionalTest {
 	{
 		$editPageLink = singleton('CMSPageEditController')->Link('show');
 
+		// Required to have permission to view the page
+		$this->logInWithPermission('ADMIN');
+
 		foreach ($this->pages as $page) {
 			// Visit page in CMS
 			$response = $this->get(Controller::join_links($editPageLink, $page->ID));
-			$this->assertTrue($response->getStatusCode() == 200);
+			$statusCode = $response->getStatusCode();
+			$this->assertEquals(200, $statusCode, $statusCode == 302 ? 'User probably doesn\'t have permission (canView()) #'.$page->ID.' '.$page->ClassName.'.' : '');
 		}
+
+		// Logout
+		$this->logInAs(0);
 	}
 
 	// NOTE(Jake): When tested against a Symbiote project, I was getting: "LogicException: No ListFilterSet configured on Page #2"
