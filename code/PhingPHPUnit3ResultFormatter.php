@@ -19,7 +19,9 @@
  * <http://phing.info>.
  */
 
-require_once 'PHPUnit/Framework/TestListener.php';
+if (file_exists('PHPUnit/Framework/TestListener.php')) {
+	require_once 'PHPUnit/Framework/TestListener.php';
+}
 
 /**
  * This abstract class describes classes that format the results of a PHPUnit2 testrun.
