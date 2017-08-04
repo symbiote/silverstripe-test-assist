@@ -70,7 +70,11 @@ class ParameterisedTestRunner extends TestRunner
 			global $databaseConfig;
 			$newConfig = $databaseConfig;
 			$newConfig = array_merge($databaseConfig, $TESTING_CONFIG);
-			$newConfig['memory'] = isset($TESTING_CONFIG['memory']) ? $TESTING_CONFIG['memory'] : true;
+			$isUsingInMemory = isset($TESTING_CONFIG['memory']) ? $TESTING_CONFIG['memory'] : true;
+			if ($isUsingInMemory) {
+				// NOTE: $newConfig['memory'] is deprecated in SQLite3Database 1.4.0
+				$newConfig['path'] = ':memory:';
+			}
 			
 			$newDbName = $TESTING_CONFIG['database'];
 			
@@ -84,7 +88,7 @@ class ParameterisedTestRunner extends TestRunner
 				throw new Exception("Could not find database to use for testing");
 			}
 			
-			if ($newConfig['memory']) {
+			if ($newConfig['path'] === ':memory:') {
 				Debug::message("Using in memory database");
 			}
 
