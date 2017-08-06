@@ -143,16 +143,14 @@ class ParameterisedTestRunner extends TestRunner
 		restore_error_handler();
 
 		// CUSTOMISATION
+		$reporterClassesStr = "SapphireTestReporter";
 		if (Director::is_cli()) {
+			$reporterClassesStr = "CliTestReporter";
 			if ($reporterClass = $this->request->requestVar('reporter')) {
-				$clazz = $reporterClass;
+				$reporterClassesStr = $reporterClass;
 			} else if (isset($TESTING_CONFIG['reporter'])) {
-				$clazz = $TESTING_CONFIG['reporter'];
-			} else { 
-				$clazz = "CliTestReporter";
+				$reporterClassesStr = $TESTING_CONFIG['reporter'];
 			}
-		} else {
-			$clazz = "SapphireTestReporter";
 		}
 		// END CUSTOMISATION
 		
@@ -162,8 +160,11 @@ class ParameterisedTestRunner extends TestRunner
 			$outputFile = BASE_PATH . '/'. $TESTING_CONFIG['logfile'];
 		}
         
-		$reporter = new $clazz($outputFile);
-		$default = self::$default_reporter;
+        $reporters = array();
+        $reporterClasses = explode(',', $reporterClassesStr);
+        foreach ($reporterClasses as $reporterClass) {
+        	$reporters[] = new $reporterClass($outputFile);
+        }
 
 		self::$default_reporter->writeHeader("Sapphire Test Runner");
 		if (count($classList) > 1) { 
@@ -172,8 +173,10 @@ class ParameterisedTestRunner extends TestRunner
 			self::$default_reporter->writeInfo($classList[0], "");
 		}
 		
-		$results = new PHPUnit_Framework_TestResult();		
-		$results->addListener($reporter);
+		$results = new PHPUnit_Framework_TestResult();
+		foreach ($reporters as $reporter) {
+			$results->addListener($reporter);
+		}
 
 		if($coverage === true) {
 			$coverer = $this->getCodeCoverage();
@@ -187,11 +190,13 @@ class ParameterisedTestRunner extends TestRunner
 		
 		if(!Director::is_cli()) echo '<div class="trace">';
 		
-        if (method_exists($reporter, 'writeResults')) {
-            $reporter->writeResults($outputFile);
-        } else {
-            $reporter->flush();
-        }
+		foreach ($reporters as $reporter) {
+	        if (method_exists($reporter, 'writeResults')) {
+	            $reporter->writeResults($outputFile);
+	        } else {
+	            $reporter->flush();
+	        }
+    	}
 		
 		// END CUSTOMISATION
 
