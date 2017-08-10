@@ -58,8 +58,10 @@ To hook codeception up for your project, you will need to create a
 codeception.yml config file at the top level of your project.
 
 ```
+include:
+  - mymodule/codeception
 paths:
-  log: log
+  log: path/to/logdir
 ```
 
 **codeception.yml** defines the paths of modules to be included in the
