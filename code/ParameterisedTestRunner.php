@@ -170,7 +170,8 @@ class ParameterisedTestRunner extends TestRunner
 		if (count($classList) > 1) { 
 			self::$default_reporter->writeInfo("All Tests", "Running test cases: " . implode(",", $classList));
 		} else {
-			self::$default_reporter->writeInfo($classList[0], "");
+            count($classList) > 0 ? self::$default_reporter->writeInfo($classList[0], "") : 0;
+			
 		}
 		
 		$results = new PHPUnit_Framework_TestResult();
