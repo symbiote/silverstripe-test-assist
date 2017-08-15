@@ -41,7 +41,7 @@ class SilverstripeFunctional extends \Codeception\Module
 		
 		// return array('user'=>$username, 'pass'=>$password);
 		$this->I->amOnPage('/admin');
-		$this->I->see('Login');
+		$this->I->see('Log in');
 		$this->loginWith($username, $password);
 	}
 
