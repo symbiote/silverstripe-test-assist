@@ -9,12 +9,23 @@ class SilverstripeFunctional extends \Codeception\Module
 {
 	public $I;
 
+    /**
+     * These can be set depending on better buttons or not
+     *
+     * @var string
+     */
+    protected $saveButton = 'action_doSave';
+
 	public function __construct(ModuleContainer $moduleContainer, $config = null)
 	{
 		// var_dump($moduleContainer->getModule('WebDriver')->_getConfig());
 		//$this->I = $moduleContainer->getModule("WebDriver");
 		parent::__construct($moduleContainer, $config);
 		$this->I = $this->moduleContainer->getModule("WebDriver");
+        
+        if (isset($config['use_better_buttons']) && $config['use_better_buttons']) {
+            $this->saveButton = 'action_save';
+        }
 	}
 
 	public function haveLoginDetailsFor($user = null)
@@ -336,7 +347,9 @@ class SilverstripeFunctional extends \Codeception\Module
 
 	public function clickModelAdminSaveButton()
 	{
-		$this->I->click(['css' => 'button[name=action_doSave]']);
+        $this->waitForElement("button[name=$this->saveButton]");
+        
+		$this->I->click(['css' => "button[name=$this->saveButton]"]);
 		// waiting for ajax request to 
 		$this->waitForElement('p.message.good:contains("Saved")');
 		
