@@ -184,6 +184,7 @@ class SilverstripeFunctional extends \Codeception\Module
 	public function waitForElement($selector, $maxTime = 10)
 	{
 		$i = 0;
+        $selector = str_replace("'", "\\'", $selector);
 		while($this->I->executeJS("return jQuery('$selector').length > 0;") == false)
 		{
 			if($i >= $maxTime) { return false; }
@@ -329,7 +330,7 @@ class SilverstripeFunctional extends \Codeception\Module
 	
 	public function clickModelAdminTab($dataType)
 	{
-		$this->I->click(['css' => "li.tab-$dataType a"]);
+		$this->I->click(['css' => ".cms-tabset-nav-primary li[class*='$dataType'] a"]);
 		$this->waitForElement("form[action$='$dataType/EditForm']");
 	}
 
