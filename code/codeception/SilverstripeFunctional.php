@@ -191,7 +191,7 @@ class SilverstripeFunctional extends \Codeception\Module
         $selector = str_replace("'", "\\'", $selector);
         while ($this->I->executeJS("return jQuery('$selector').length > 0;") == false) {
             if ($i >= $maxTime) {
-                return false;
+                throw new \Exception("Could not find $selector"); 
             }
             sleep(1);
             $i++;
@@ -213,7 +213,7 @@ class SilverstripeFunctional extends \Codeception\Module
         $i = 0;
         while ($this->I->executeJS("return jQuery('$selector').is(':visible');")) {
             if ($i >= $maxTime) {
-                return false;
+                throw new \Exception("$selector is still visible");
             }
             sleep(1);
             $i++;
@@ -234,7 +234,7 @@ class SilverstripeFunctional extends \Codeception\Module
         $i = 0;
         while ($this->I->executeJS("return !jQuery('$selector').is(':visible');")) {
             if ($i >= $maxTime) {
-                return false;
+                throw new \Exception("$selector did not appear");
             }
             sleep(1);
             $i++;
