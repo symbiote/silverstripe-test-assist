@@ -7,6 +7,14 @@ several configuration options.
 Additionally, the module provides the `SymbioteSeleniumTestCase` which provides a 
 simpler API for writing Selenium powered tests. 
 
+## Command line parameters
+
+To help with test execution, there's a few parameters that can be used to assist in speeding things up if you're repeatedly running tests. 
+
+* `build=0` - do not perform a dev/build during test initialisation
+* `clean=0` - do not wipe out existing database state
+* `flush=0` - do not perform a manifest flush during test initialisation
+
 ## Selenium
 
 To run just the selenium tests, a commandline such as 
