@@ -358,6 +358,7 @@ class SilverstripeFunctional extends \Codeception\Module
         $this->waitForElement("button[name=$this->saveButton]");
 
         $this->I->click(['css' => "button[name=$this->saveButton]"]);
+        usleep(200000);
         // waiting for ajax request to
         $this->waitForElement('p.message.good:contains("Saved")');
 
