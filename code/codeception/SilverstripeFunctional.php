@@ -344,7 +344,7 @@ class SilverstripeFunctional extends \Codeception\Module
     public function clickModelAdminRootTab($tab)
     {
         $this->I->click(['xpath' => '//div[@id="Root"]/ul/li/a[@id="tab-Root_'.$tab.'"]']);
-        $this->waitForElement('#tab-Root_'.$tab.'.ui-state-active');
+        $this->waitForElement('.ui-state-active #tab-Root_'.$tab.'');
     }
 
     public function clickModelAdminAddButton()
