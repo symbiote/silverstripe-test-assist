@@ -19,7 +19,9 @@
  * <http://phing.info>.
  */
 
-require_once 'PHPUnit/Util/Log/JUnit.php';
+if (file_exists('PHPUnit/Util/Log/JUnit.php')) {
+	require_once 'PHPUnit/Util/Log/JUnit.php';
+}
 
 /**
  * Prints XML output of the test to a specified Writer
@@ -85,6 +87,18 @@ class PhingXMLPHPUnit3ResultFormatter extends PhingPHPUnit3ResultFormatter
 		parent::addError($test, $e, $time);
 
 		$this->logger->addError($test, $e, $time);
+	}
+
+	/**
+	 * Risky test.
+	 *
+	 * @param PHPUnit_Framework_Test $test
+	 * @param Exception              $e
+	 * @param float                  $time
+	 * @since  Method available since Release 3.8.0
+	 */
+	function addRiskyTest(PHPUnit_Framework_Test $test, Exception $e, $time) {
+		// Stub out to support PHPUnit 3.8
 	}
 
 	function addFailure(PHPUnit_Framework_Test $test, PHPUnit_Framework_AssertionFailedError $e, $time)
