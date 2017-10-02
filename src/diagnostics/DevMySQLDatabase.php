@@ -1,5 +1,8 @@
 <?php
 
+use SilverStripe\Control\Director;
+use SilverStripe\ORM\Connect\MySQLDatabase;
+
 /**
  * Custom dev version of the database that will record details of queries
  *

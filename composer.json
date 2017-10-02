@@ -13,7 +13,7 @@
 	"extra": {
 		"installer-name": "test-assist",
 		"branch-alias": {
-			"dev-master": "3.0.x-dev"
+			"dev-master": "4.0.x-dev"
 		}
 	},
 	"replace": {

@@ -1,5 +1,10 @@
 <?php
 
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Control\Session;
+use SilverStripe\Control\RequestFilter;
+
 /**
  * @author <marcus@symbiote.com.au>
  * @license BSD License http://www.silverstripe.org/bsd-license
@@ -7,7 +12,7 @@
 class RequestTimerFilter implements RequestFilter {
 	private $start;
 	
-	public function postRequest(\SS_HTTPRequest $request, \SS_HTTPResponse $response, \DataModel $model) {
+	public function postRequest(HTTPRequest $request, HTTPResponse $response) {
 		$time = sprintf('%.3f ms', microtime(true) - $this->start);
 		$response->addHeader('X-SilverStripe-Time', $time);
 		
@@ -19,7 +24,7 @@ class RequestTimerFilter implements RequestFilter {
 		}
 	}
 		
-	public function preRequest(\SS_HTTPRequest $request, \Session $session, \DataModel $model) {
+	public function preRequest(HTTPRequest $request) {
 		$this->start = microtime(true);
 	}
 

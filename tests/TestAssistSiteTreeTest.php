@@ -1,5 +1,16 @@
 <?php
 
+use SilverStripe\Control\Controller;
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\CMS\Model\SiteTree;
+use SilverStripe\Core\ClassInfo;
+use SilverStripe\ErrorPage\ErrorPage;
+use SilverStripe\CMS\Model\RedirectorPage;
+use SilverStripe\CMS\Model\VirtualPage;
+use SilverStripe\Dev\TestOnly;
+use SilverStripe\CMS\Controllers\CMSPageEditController;
+use SilverStripe\Dev\FunctionalTest;
+
 /**
  * @package test-assist
  * @subpackage tests
@@ -33,7 +44,7 @@ class TestAssistSiteTreeTest extends FunctionalTest {
 		if (!$this->pages) {
 			// NOTE(Jake): Allow use of "Controller::curr()" in onBeforeWrite.
 			$stubController = new Controller;
-			$stubController->setRequest(new SS_HTTPRequest(
+			$stubController->setRequest(new HTTPRequest(
 				'POST', 
 				'', 
 				// Get vars
@@ -48,7 +59,7 @@ class TestAssistSiteTreeTest extends FunctionalTest {
             $stubController->pushCurrent();
 			$this->logInWithPermission('ADMIN');
 
-			$pagesTypes = ClassInfo::subclassesFor('SiteTree');
+			$pagesTypes = ClassInfo::subclassesFor(SiteTree::class);
 
 			// Support Multisites
 			if (class_exists('Site')) {
@@ -91,7 +102,7 @@ class TestAssistSiteTreeTest extends FunctionalTest {
 			unset($pagesTypes['MediaPage']);
 
 			// Setup ErrorPage
-			if (isset($pagesTypes['ErrorPage'])) {
+			if (isset($pagesTypes[ErrorPage::class])) {
 				// 404 Page
 				$page = ErrorPage::create();
 				$page->Title = $page->class.' Test 404 Page';
@@ -107,22 +118,22 @@ class TestAssistSiteTreeTest extends FunctionalTest {
 				$page->write();
 				$page->doPublish();
 				$this->pages[] = $page;
-				unset($pagesTypes['ErrorPage']);
+				unset($pagesTypes[ErrorPage::class]);
 			}
 
 			// User should not be able to create SiteTree objects.
-			unset($pagesTypes['SiteTree']);
+			unset($pagesTypes[SiteTree::class]);
 
 			// Workaround pages that didn't implement 'TestOnly'
 			unset($pagesTypes['SitemapPageTest_Unviewable']); // Sitemap module
 
 			// Don't bother testing framework pages
-			unset($pagesTypes['RedirectorPage']);
-			unset($pagesTypes['VirtualPage']);
+			unset($pagesTypes[RedirectorPage::class]);
+			unset($pagesTypes[VirtualPage::class]);
 
 			// Handle the rest
 			foreach ($pagesTypes as $class) {
-				if (ClassInfo::classImplements($class, 'TestOnly')) {
+				if (ClassInfo::classImplements($class, TestOnly::class)) {
 					continue;
 				}
 				// ie. Ignore CalendarEvent
@@ -155,7 +166,7 @@ class TestAssistSiteTreeTest extends FunctionalTest {
 
 	public function testGetCMSFields() 
 	{
-		$editPageLink = singleton('CMSPageEditController')->Link('show');
+		$editPageLink = singleton(CMSPageEditController::class)->Link('show');
 
 		// Required to have permission to view the page
 		$this->logInWithPermission('ADMIN');

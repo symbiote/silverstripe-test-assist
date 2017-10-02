@@ -3,11 +3,13 @@
 namespace Symbiote\TestAssist\Helper;
 
 use Codeception\Lib\ModuleContainer;
+use SilverStripe\Control\Email\Email;
+use SilverStripe\Core\Manifest\Module;
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
-class SilverstripeFunctional extends \Codeception\Module
+class SilverstripeFunctional extends Module
 {
     public $I;
 
@@ -146,7 +148,7 @@ class SilverstripeFunctional extends \Codeception\Module
      */
     public function loginWith($email, $password)
     {
-        $this->I->fillField('Email', $email);
+        $this->I->fillField(Email::class, $email);
         $this->I->fillField('Password', $password);
         $this->I->click("action_dologin");
     }

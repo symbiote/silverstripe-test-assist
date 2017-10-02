@@ -1,5 +1,7 @@
 <?php
 
+use SilverStripe\Core\Config\Config;
+
 /**
  * 
  * @author <marcus@symbiote.com.au>

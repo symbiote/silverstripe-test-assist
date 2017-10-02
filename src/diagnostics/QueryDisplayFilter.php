@@ -1,5 +1,10 @@
 <?php
 
+use SilverStripe\Control\HTTPRequest;
+use SilverStripe\Control\HTTPResponse;
+use SilverStripe\Control\Session;
+use SilverStripe\Control\RequestFilter;
+
 /**
  * Display query information
  *
@@ -29,7 +34,7 @@ class QueryDisplayFilter implements RequestFilter {
 	public $queryThreshold = 5;
 	
 	
-	public function postRequest(\SS_HTTPRequest $request, \SS_HTTPResponse $response, \DataModel $model) {
+	public function postRequest(HTTPRequest $request, HTTPResponse $response) {
 		if (defined('PROXY_CACHE_GENERATING') || isset($GLOBALS['__cache_publish']) || strpos($request->getURL(), 'admin/') !== false) {
 			return;
 		}
@@ -92,7 +97,7 @@ class QueryDisplayFilter implements RequestFilter {
 		}
 	}
 
-	public function preRequest(\SS_HTTPRequest $request, \Session $session, \DataModel $model) {
+	public function preRequest(HTTPRequest $request) {
 		
 	}
 
