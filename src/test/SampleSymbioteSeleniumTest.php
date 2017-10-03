@@ -1,7 +1,7 @@
 <?php
 
 /**
- * php framework/cli-script.php dev/tests/SampleSymbioteSeleniumTest flush=1 build=1 selenium_host=127.0.0.1 browser=firefox 
+ * php vendor/silverstripe/framework/cli-script.php dev/tests/SampleSymbioteSeleniumTest flush=1 build=1 selenium_host=127.0.0.1 browser=firefox 
  * test_url=http://testing.demos.dev/ test_type=SymbioteSeleniumTestCase SkipTests=symbioteseleniumtestcase admin_user=admin admin_pass=admin
  *
  * @author <marcus@symbiote.com.au>

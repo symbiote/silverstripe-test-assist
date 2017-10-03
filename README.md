@@ -20,7 +20,7 @@ To help with test execution, there's a few parameters that can be used to assist
 To run just the selenium tests, a commandline such as 
 
 ```
-php framework/cli-script.php dev/tests/module/test-assist \ 
+php vendor/silverstripe/framework/cli-script.php dev/tests/module/test-assist \ 
   flush=1 build=1 selenium_host=127.0.0.1 browser=firefox \
   test_url=http://my.silverstripe.site/ test_type=SymbioteSeleniumTestCase SkipTests=symbioteseleniumtestcase \
   admin_user=admin admin_pass=admin
@@ -128,7 +128,7 @@ environment for unit testing:
 ```
 <?php
 // Unit testing specific setup
-include_once 'framework/tests/bootstrap.php';
+include_once 'vendor/silverstripe/framework/tests/bootstrap.php';
 ```
 
 Now, add the following to .gitignore
