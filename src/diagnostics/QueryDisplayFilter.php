@@ -38,7 +38,7 @@ class QueryDisplayFilter implements RequestFilter {
 		if (defined('PROXY_CACHE_GENERATING') || isset($GLOBALS['__cache_publish']) || strpos($request->getURL(), 'admin/') !== false) {
 			return;
 		}
-		$this->database = Db::getConn();
+		$this->database = DB::get_conn();
 		
 		$queries = $this->database->queryRecord;
 		$dupes = $this->database->getDuplicateQueries();
