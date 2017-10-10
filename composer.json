@@ -10,6 +10,9 @@
 			"email": "marcus@symbiote.com.au"
 		}
 	],
+	"require": {
+		"codeception/codeception": "~2.3"
+	},
 	"extra": {
 		"installer-name": "test-assist",
 		"branch-alias": {
