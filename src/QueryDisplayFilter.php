@@ -1,9 +1,16 @@
 <?php
 
+namespace Symbiote\TestAssist;
+
+
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Control\Session;
 use SilverStripe\Control\RequestFilter;
+
+use SilverStripe\ORM\DB;
+
+
 
 /**
  * Display query information

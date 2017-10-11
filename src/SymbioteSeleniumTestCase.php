@@ -1,6 +1,14 @@
 <?php
 
+namespace Symbiote\TestAssist;
+
+
 use SilverStripe\Core\Config\Config;
+use PHPUnit_Extensions_SeleniumTestCase;
+use Exception;
+use Symbiote\TestAssist\SymbioteSeleniumTestCase;
+
+
 
 /**
  * 
@@ -35,11 +43,11 @@ class SymbioteSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 			$this->setHost($_GET['selenium_host']);
 		}
 		
-		$this->user = isset($_GET['user']) ? $_GET['user'] : Config::inst()->get('SymbioteSeleniumTestCase', 'test_user');
-		$this->pass = isset($_GET['pass']) ? $_GET['pass'] : Config::inst()->get('SymbioteSeleniumTestCase', 'test_pass');
+		$this->user = isset($_GET['user']) ? $_GET['user'] : Config::inst()->get(SymbioteSeleniumTestCase::class, 'test_user');
+		$this->pass = isset($_GET['pass']) ? $_GET['pass'] : Config::inst()->get(SymbioteSeleniumTestCase::class, 'test_pass');
 		
-		$browser = isset($_GET['browser']) ? $_GET['browser'] : Config::inst()->get('SymbioteSeleniumTestCase', 'test_browser');
-		$url = isset($_GET['test_url']) ? $_GET['test_url'] : Config::inst()->get('SymbioteSeleniumTestCase', 'test_url');
+		$browser = isset($_GET['browser']) ? $_GET['browser'] : Config::inst()->get(SymbioteSeleniumTestCase::class, 'test_browser');
+		$url = isset($_GET['test_url']) ? $_GET['test_url'] : Config::inst()->get(SymbioteSeleniumTestCase::class, 'test_url');
 
 		$this->setBrowser($browser);
 		$this->setBrowserUrl($url);
@@ -150,8 +158,8 @@ class SymbioteSeleniumTestCase extends PHPUnit_Extensions_SeleniumTestCase {
 		$u = "{$user}_user";
 		$p = "{$user}_pass";
 		
-		$username = isset($_GET[$u]) ? $_GET[$u] : Config::inst()->get('SymbioteSeleniumTestCase', $u);
-		$password = isset($_GET[$p]) ? $_GET[$p] : Config::inst()->get('SymbioteSeleniumTestCase', $p);
+		$username = isset($_GET[$u]) ? $_GET[$u] : Config::inst()->get(SymbioteSeleniumTestCase::class, $u);
+		$password = isset($_GET[$p]) ? $_GET[$p] : Config::inst()->get(SymbioteSeleniumTestCase::class, $p);
 		
 		if (!$username) {
 			return false;

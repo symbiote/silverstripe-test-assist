@@ -1,6 +1,11 @@
 <?php
 
+namespace Symbiote\TestAssist;
+
+
 use SilverStripe\ORM\Connect\MySQLDatabase;
+use Exception;
+
 
 /**
  * Description of DummyReadonlyMySQLDatabase

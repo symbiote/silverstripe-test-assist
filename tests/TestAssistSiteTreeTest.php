@@ -1,5 +1,8 @@
 <?php
 
+namespace Symbiote\TestAssist\Tests;
+
+
 use SilverStripe\Control\Controller;
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\CMS\Model\SiteTree;
@@ -10,6 +13,9 @@ use SilverStripe\CMS\Model\VirtualPage;
 use SilverStripe\Dev\TestOnly;
 use SilverStripe\CMS\Controllers\CMSPageEditController;
 use SilverStripe\Dev\FunctionalTest;
+use Site;
+use HomePage;
+
 
 /**
  * @package test-assist

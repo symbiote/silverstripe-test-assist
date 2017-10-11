@@ -1,9 +1,14 @@
 <?php
 
+namespace Symbiote\TestAssist;
+
+
 use SilverStripe\Control\HTTPRequest;
 use SilverStripe\Control\HTTPResponse;
 use SilverStripe\Control\Session;
 use SilverStripe\Control\RequestFilter;
+
+
 
 /**
  * @author <marcus@symbiote.com.au>

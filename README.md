@@ -109,7 +109,7 @@ modules:
     enabled:
         - \modulename\Helper\Functional
         - WebDriver # new
-        - \Symbiote\TestAssist\Helper\SilverstripeFunctional # new
+        - \Symbiote\TestAssist\SilverstripeFunctional # new
 
 ```
 
@@ -184,6 +184,6 @@ From the top level of the project
 Some of the in-built helper methods won't work if better buttons is installed. 
 If this the case, add 
 
-`\Symbiote\TestAssist\Helper\SilverstripeFunctional.use_better_buttons: true`
+`\Symbiote\TestAssist\SilverstripeFunctional.use_better_buttons: true`
 
 in codeception.dist.yml

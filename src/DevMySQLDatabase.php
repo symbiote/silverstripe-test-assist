@@ -1,7 +1,12 @@
 <?php
 
+namespace Symbiote\TestAssist;
+
+
 use SilverStripe\Control\Director;
 use SilverStripe\ORM\Connect\MySQLDatabase;
+use stdClass;
+
 
 /**
  * Custom dev version of the database that will record details of queries

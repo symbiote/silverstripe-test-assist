@@ -1,13 +1,14 @@
 <?php
 
-namespace Symbiote\TestAssist\Helper;
+namespace Symbiote\TestAssist;
 
 use Codeception\Lib\ModuleContainer;
+
 
 // here you can define custom actions
 // all public methods declared in helper class will be available in $I
 
-class SilverstripeFunctional extends /Codeception/Module
+class SilverstripeFunctional extends Codeception\Module
 {
     public $I;
 

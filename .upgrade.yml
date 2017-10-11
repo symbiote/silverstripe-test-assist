@@ -1,0 +1,10 @@
+mappings:
+  DevMySQLDatabase: Symbiote\TestAssist\DevMySQLDatabase
+  DummyReadonlyMySQLDatabase: Symbiote\TestAssist\DummyReadonlyMySQLDatabase
+  PhingPHPUnit3ResultFormatter: Symbiote\TestAssist\PhingPHPUnit3ResultFormatter
+  PhingXMLPHPUnit3ResultFormatter: Symbiote\TestAssist\PhingXMLPHPUnit3ResultFormatter
+  QueryDisplayFilter: Symbiote\TestAssist\QueryDisplayFilter
+  RequestTimerFilter: Symbiote\TestAssist\RequestTimerFilter
+  SymbioteSeleniumTestCase: Symbiote\TestAssist\SymbioteSeleniumTestCase
+  SampleSymbioteSeleniumTest: Symbiote\TestAssist\Tests\SampleSymbioteSeleniumTest
+  TestAssistSiteTreeTest: Symbiote\TestAssist\Tests\TestAssistSiteTreeTest

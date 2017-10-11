@@ -1,4 +1,16 @@
 <?php
+
+namespace Symbiote\TestAssist;
+
+
+use PHPUnit_Util_Log_JUnit;
+use PHPUnit_Framework_TestSuite;
+use PHPUnit_Framework_Test;
+use Exception;
+use PHPUnit_Framework_AssertionFailedError;
+use Symbiote\TestAssist\PhingPHPUnit3ResultFormatter;
+
+
 /**
  * $Id: XMLPHPUnit2ResultFormatter.php 142 2007-02-04 14:06:00Z mrook $
  *
