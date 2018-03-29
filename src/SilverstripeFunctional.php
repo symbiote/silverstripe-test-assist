@@ -36,7 +36,7 @@ class SilverstripeFunctional extends Module
         $u = "{$user}_user";
         $p = "{$user}_pass";
 
-        $config = $this->I->_getConfig();
+        $config = $this->_getConfig();
 
         if (isset($config[$u]) && isset($config[$p])) {
             return true;
@@ -44,12 +44,31 @@ class SilverstripeFunctional extends Module
         return false;
     }
 
+    public function loginToPage($page = "/", $user = 'user') {
+        $u = "{$user}_user";
+        $p = "{$user}_pass";
+
+        $config = $this->_getConfig();
+        if (!isset($config[$u])) {
+            $me = get_class($this);
+            throw new \Exception("Please specify modules.config.$me.$u in your local codeception.yml");
+        }
+
+        $username = $config[$u];
+        $password = $config[$p];
+
+        $this->I->amOnPage('/Security/login?BackURL=' .urlencode($page));
+
+        $this->I->see('Log in');
+        $this->loginWith($username, $password);
+    }
+
     public function loginToAdminAs($user = null)
     {
         $u = "{$user}_user";
         $p = "{$user}_pass";
 
-        $config = $this->I->_getConfig();
+        $config = $this->_getConfig();
 
         $username = $config[$u];
         $password = $config[$p];
@@ -149,7 +168,7 @@ class SilverstripeFunctional extends Module
     {
         $this->I->fillField('Email', $email);
         $this->I->fillField('Password', $password);
-        $this->I->click("action_dologin");
+        $this->I->click("action_doLogin");
     }
 
     public function logout()

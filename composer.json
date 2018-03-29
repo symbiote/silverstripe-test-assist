@@ -17,7 +17,7 @@
 	"extra": {
 		"installer-name": "test-assist",
 		"branch-alias": {
-			"dev-master": "4.0.x-dev"
+			"dev-master": "4.1.x-dev"
 		}
 	},
 	"autoload": {
