@@ -30,6 +30,12 @@ class SilverstripeFunctional extends Module
             $this->saveButton = 'action_save';
         }
     }
+    
+    public function getModuleReference($module)
+    {
+        $m = $this->moduleContainer->getModule($module);
+        return $m;
+    }
 
     public function haveLoginDetailsFor($user = null)
     {
