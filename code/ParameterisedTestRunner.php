@@ -16,7 +16,11 @@ class ParameterisedTestRunner extends TestRunner
 		'only',
 		'coverage/module/$ModuleName' => 'coverageModule',
 		'coverage' => 'coverageAll',
-	);
+    );
+    
+    private static $url_handlers = [
+        'only/$TestCase' => 'only',
+    ];
 	
 	/**
 	 * The list of modules we're testing. Captures info for code-coverage
