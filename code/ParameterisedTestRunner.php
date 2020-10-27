@@ -80,15 +80,13 @@ class ParameterisedTestRunner extends TestRunner
 				$newConfig['path'] = ':memory:';
 			}
 			
-			$newDbName = $TESTING_CONFIG['database'];
+            $newDbName = $TESTING_CONFIG['database'];
+            unset($TESTING_CONFIG['database']);
 			
 			$type = isset($newConfig['type']) ? $newConfig['type'] : 'MySQL';
-			Debug::message("Connecting to new $type database ${TESTING_CONFIG['database']} as defined by testing config");
+			Debug::message("Connecting to new $type database $newDbName as defined by testing config");
 			DB::connect($newConfig);
-			if (!DB::getConn()->databaseExists($newDbName)) {
-				DB::getConn()->createDatabase($newDbName);
-			}
-			if (!DB::getConn()->selectDatabase($newDbName)) {
+			if (!DB::get_conn()->selectDatabase($newDbName, true)) {
 				throw new Exception("Could not find database to use for testing");
 			}
 			
